@@ -1,0 +1,1 @@
+export { default as payoutRoutes } from "./payout.route.js"

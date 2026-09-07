@@ -1,0 +1,228 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  opacity: 0.9;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--border-medium);
+}
+
+/* Card Themes */
+.amberCard::before {
+  background: var(--accent-amber);
+}
+.amberCard.cardActive {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 0 2px var(--accent-amber-subtle), var(--shadow-card-hover);
+}
+
+.emeraldCard::before {
+  background: var(--accent-emerald);
+}
+.emeraldCard.cardActive {
+  border-color: var(--accent-emerald);
+  box-shadow: 0 0 0 2px var(--accent-emerald-subtle), var(--shadow-card-hover);
+}
+
+.roseCard::before {
+  background: var(--accent-rose);
+}
+.roseCard.cardActive {
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 0 2px var(--accent-rose-subtle), var(--shadow-card-hover);
+}
+
+.indigoCard::before {
+  background: var(--accent-indigo);
+}
+.indigoCard.cardActive {
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0 0 2px var(--accent-indigo-subtle), var(--shadow-card-hover);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.iconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amberIconWrap {
+  background: var(--accent-amber-subtle);
+  color: var(--accent-amber);
+  border: 1px solid var(--accent-amber-border);
+}
+
+.emeraldIconWrap {
+  background: var(--accent-emerald-subtle);
+  color: var(--accent-emerald);
+  border: 1px solid var(--accent-emerald-border);
+}
+
+.roseIconWrap {
+  background: var(--accent-rose-subtle);
+  color: var(--accent-rose);
+  border: 1px solid var(--accent-rose-border);
+}
+
+.indigoIconWrap {
+  background: var(--accent-indigo-subtle);
+  color: var(--accent-indigo);
+  border: 1px solid var(--accent-indigo-border);
+}
+
+.badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.amberBadge {
+  background: var(--accent-amber-subtle);
+  color: var(--accent-amber);
+}
+
+.emeraldBadge {
+  background: var(--accent-emerald-subtle);
+  color: var(--accent-emerald);
+}
+
+.roseBadge {
+  background: var(--accent-rose-subtle);
+  color: var(--accent-rose);
+}
+
+.indigoBadge {
+  background: var(--accent-indigo-subtle);
+  color: var(--accent-indigo);
+}
+
+.cardBody {
+  margin-bottom: var(--space-sm);
+}
+
+.cardTitle {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.primaryRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.countNumber {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.countSuffix {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.cardFooter {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fiatRow {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.fiatAmount {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.inrTag {
+  font-size: 0.6875rem;
+  color: var(--accent-indigo);
+  font-weight: 700;
+}
+
+.subDetail {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+/* Responsiveness */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .card {
+    padding: 16px;
+  }
+  .countNumber {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,600 @@
+.container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: clamp(16px, 2.5vw, 24px);
+  box-shadow: var(--shadow-card);
+}
+
+.controlsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Status Tabs */
+.statusTabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  max-width: 100%;
+  padding-bottom: 2px;
+}
+
+.tabBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-secondary);
+}
+
+.tabBtnActive {
+  color: var(--accent-indigo);
+}
+
+.activeUnderline {
+  position: absolute;
+  bottom: -9px;
+  left: 10px;
+  right: 10px;
+  height: 2.5px;
+  background: var(--accent-indigo);
+  border-radius: var(--radius-pill);
+}
+
+.tabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background: var(--bg-surface-secondary);
+  color: var(--text-secondary);
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+}
+
+.pendingPill {
+  background: var(--accent-amber-subtle);
+  color: var(--accent-amber);
+}
+
+.approvedPill {
+  background: var(--accent-emerald-subtle);
+  color: var(--accent-emerald);
+}
+
+.rejectedPill {
+  background: var(--accent-rose-subtle);
+  color: var(--accent-rose);
+}
+
+/* Right Controls */
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.methodGroup {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface-secondary);
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+}
+
+.methodChip {
+  background: none;
+  border: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.methodChip:hover {
+  color: var(--text-primary);
+}
+
+.methodChipActive {
+  background: #ffffff;
+  color: var(--accent-indigo);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.searchWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  background: var(--bg-surface-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 7px 32px 7px 34px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  width: 220px;
+  transition: var(--transition-fast);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent-indigo);
+  background: #ffffff;
+  width: 250px;
+  box-shadow: 0 0 0 3px var(--accent-indigo-subtle);
+}
+
+.clearSearchBtn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearSearchBtn:hover {
+  color: var(--text-primary);
+}
+
+/* Table */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 12px 14px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  white-space: nowrap;
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-fast);
+}
+
+.tableRow:hover {
+  background: #f8fafc;
+}
+
+.table td {
+  padding: 14px 14px;
+  font-size: var(--fs-xs);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+/* User Cell */
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userAvatarSmall {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-indigo-subtle);
+  border: 1px solid var(--accent-indigo-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--accent-indigo);
+  flex-shrink: 0;
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+}
+
+.userEmailText {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.idSubText {
+  font-family: monospace;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+/* Method Cell */
+.methodCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.methodIconBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-secondary);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.methodText {
+  display: flex;
+  flex-direction: column;
+}
+
+.methodTitle {
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  color: var(--text-primary);
+}
+
+.optionPill {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.vesAmount {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Payout Cell */
+.payoutCell {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.payoutAmountText {
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--text-primary);
+}
+
+.payoutCurrencyTag {
+  font-size: 0.6875rem;
+  color: var(--accent-indigo);
+  font-weight: 700;
+}
+
+/* Destination Cell */
+.destinationCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+}
+
+.destinationText {
+  font-family: monospace;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.miniCopyBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.miniCopyBtn:hover {
+  color: var(--accent-indigo);
+}
+
+.greenCheck {
+  color: var(--accent-emerald);
+}
+
+.dateText {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Status Pill */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.statusPending {
+  background: var(--accent-amber-subtle);
+  border: 1px solid var(--accent-amber-border);
+  color: var(--accent-amber);
+}
+
+.statusApproved {
+  background: var(--accent-emerald-subtle);
+  border: 1px solid var(--accent-emerald-border);
+  color: var(--accent-emerald);
+}
+
+.statusRejected {
+  background: var(--accent-rose-subtle);
+  border: 1px solid var(--accent-rose-border);
+  color: var(--accent-rose);
+}
+
+/* Action Buttons */
+.actionButtonsRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.approveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--accent-emerald-subtle);
+  border: 1px solid var(--accent-emerald-border);
+  color: var(--accent-emerald);
+  padding: 5px 11px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.approveBtn:hover:not(:disabled) {
+  background: var(--accent-emerald);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.rejectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--accent-rose-subtle);
+  border: 1px solid var(--accent-rose-border);
+  color: var(--accent-rose);
+  padding: 5px 11px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.rejectBtn:hover:not(:disabled) {
+  background: var(--accent-rose);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.3);
+}
+
+.inspectBtn {
+  background: var(--bg-surface-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.inspectBtn:hover {
+  background: var(--border-subtle);
+  color: var(--text-primary);
+}
+
+/* Mobile cards (hidden on desktop) */
+.mobileList {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobileCard {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.mobileCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.mobileCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mobileRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  gap: 8px;
+}
+
+.mobileLabel {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.methodPillInline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mobileRejectReason {
+  background: var(--accent-rose-subtle);
+  border: 1px solid var(--accent-rose-border);
+  color: var(--accent-rose);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.75rem;
+}
+
+.mobileCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobileInspectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mobilePendingActions {
+  display: flex;
+  gap: 8px;
+}
+
+.upiIcon { color: var(--accent-teal); }
+.amazonIcon { color: var(--accent-amber); }
+.gplayIcon { color: var(--accent-emerald); }
+.defaultIcon { color: var(--accent-indigo); }
+
+@media (max-width: 920px) {
+  .tableWrapper {
+    display: none;
+  }
+  .mobileList {
+    display: flex;
+  }
+  .controlsBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .rightControls {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .searchWrap {
+    flex: 1;
+    width: 100%;
+  }
+  .searchInput {
+    width: 100%;
+  }
+  .searchInput:focus {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .rightControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .methodGroup {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .methodChip {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    font-size: 0.6875rem;
+  }
+}

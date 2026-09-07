@@ -1,0 +1,1 @@
+export { default as withdrawalRoutes } from "./withdrawal.route.js"
