@@ -223,34 +223,11 @@ All required test scenarios were verified manually against the running API (see 
 | Rejected withdrawal correctly reverses the deduction via a `REVERSAL` ledger entry | ✅ Pass |
 | Injected/manipulated amount fields in the request are ignored; real values re-derived server-side | ✅ Pass |
 
-## 8. Scaling: From 1,000 to 1,000,000 Users
-
-The current design (MongoDB with atomic per-document operations, a full transaction ledger, and stateless JWT auth) scales reasonably as-is into the low hundreds of thousands of users, but several concrete changes would be needed approaching a million:
-
-**Database:**
-- Add read replicas for the wallet/transaction read paths (`GET /wallet`, `GET /wallet/transactions`) — these are read-heavy and don't need to hit the primary.
-- Shard the `WalletTransaction` collection by `user_id` once ledger volume grows large enough that single-node write throughput becomes a bottleneck; the existing indexes (`{ user: 1, createdAt: -1 }`) are already shard-key-friendly.
-- Move to a dedicated time-series or append-only store for the ledger if transaction volume grows into the tens of millions of rows, since it's a write-heavy, immutable, append-only workload — a good fit for specialized storage rather than a general-purpose collection.
-
-**Application layer:**
-- Move rate limiting from in-memory (`express-rate-limit`'s default store) to a shared store like Redis, since in-memory limiters don't work correctly across multiple horizontally-scaled server instances — each instance would track limits independently, defeating the purpose.
-- Introduce a message queue (e.g. SQS, RabbitMQ) between withdrawal creation and actual payout processing/admin review, so the API response to the user stays fast regardless of downstream processing load, and processing can be scaled independently.
-- Cache `PayoutMethod`/`PayoutOption` reads (they change rarely) — a simple Redis cache with a short TTL or explicit invalidation on admin update would remove repeated DB round-trips for what is largely static configuration data.
-
-**Concurrency & consistency:**
-- The atomic `$gte`-filtered update pattern already used here scales well under contention on a *single* document, since MongoDB serializes writes per-document regardless of load — this doesn't need to change. The main scaling risk at high volume is many different users writing simultaneously (horizontal load), which is a MongoDB sharding/replica-set capacity question, not a correctness question with the current logic.
-
-**Idempotency store:**
-- The current sparse-unique-index approach on `idempotency_key` remains correct at scale, but for very high-volume idempotency needs (e.g. millions of requests/day), a dedicated fast key-value store (Redis with TTL) ahead of the database is a common pattern to reduce load on MongoDB for what is fundamentally a short-lived deduplication check.
-
-**Reconciliation:**
-- At scale, periodic automated reconciliation jobs (comparing `SUM(ledger entries)` against the stored `Wallet` balance per user, flagging any drift) become essential — currently this can be done manually via aggregation queries, but a scheduled job with alerting would be the production-grade version.
-
-## 9. Environment Variables
+## 8. Environment Variables
 
 See `.env.example` for the full list. Never commit a real `.env` file.
 
-## 10. Deployment
+## 9. Deployment
 
 - Backend: deployed on Render
 - Frontend (user-facing): deployed on Vercel
