@@ -249,5 +249,5 @@ See `.env.example` for the full list. Never commit a real `.env` file.
 
 Live URLs:
 - Backend API: *(add your Render URL here)*
-- User frontend: *(add your Vercel URL here)*
-- Admin console: *(add your Vercel URL here)*
+- User frontend: *https://veloop-frontend-v2.vercel.app*
+- Admin console: *https://veloop-admin-v1.vercel.app*
