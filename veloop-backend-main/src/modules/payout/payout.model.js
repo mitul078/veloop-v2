@@ -22,10 +22,8 @@ const payout_option_schema = new mongoose.Schema({
 
 //indexing
 
-payout_method_schema.index({ methodId: 1 }, { unique: true })
 payout_method_schema.index({ active: 1 })
 
-payout_option_schema.index({ optionId: 1 }, { unique: true })
 payout_option_schema.index({ methodId: 1, active: 1 })
 
 //exports

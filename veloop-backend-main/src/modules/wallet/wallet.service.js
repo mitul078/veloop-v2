@@ -1,6 +1,7 @@
 import walletRepository from "./wallet.repository.js"
 import { ValidationError } from "../../shared/errors/error_type.js"
 import auditService from "../../shared/services/audit.service.js"
+import with_transaction_retry from "../../shared/utils/with_transaction_retry.js"
 
 const VE_TO_INR_RATE = 0.10
 
@@ -47,16 +48,26 @@ async function credit_wallet({ user_id, currency, amount, type, source, referenc
     const session = await walletRepository.start_session()
     try {
         let result
-        await session.withTransaction(async () => {
-            const before = await walletRepository.get_wallet({ user_id })
-            const balance_before = before ? before[currency] : 0
+
+        await with_transaction_retry(session, async () => {
 
             const updated = await walletRepository.credit_wallet_atomic({ user_id, currency, amount, session })
+            const balance_before = updated[currency] - amount
 
             result = await walletRepository.create_transaction({
-                user_id, currency, type, direction: "CREDIT", amount,
-                balance_before, balance_after: updated[currency],
-                source, reference_id, description, metadata, idempotency_key, session
+                user_id,
+                currency,
+                type,
+                direction: "CREDIT",
+                amount,
+                balance_before,
+                balance_after: updated[currency],
+                source,
+                reference_id,
+                description,
+                metadata,
+                idempotency_key,
+                session
             })
         })
 
@@ -87,21 +98,32 @@ async function debit_wallet({ user_id, currency, amount, type, source, reference
     const session = await walletRepository.start_session()
     try {
         let result
-        await session.withTransaction(async () => {
-            const before = await walletRepository.get_wallet({ user_id })
-            const balance_before = before ? before[currency] : 0
 
+        await with_transaction_retry(session , async () => {
             const updated = await walletRepository.debit_wallet_atomic({ user_id, currency, amount, session })
-
+    
             if (!updated) {
                 throw new ValidationError(`INSUFFICIENT ${currency.toUpperCase()} BALANCE`, "INSUFFICIENT_BALANCE")
             }
-
+    
+            const balance_before = updated[currency] + amount
+    
             result = await walletRepository.create_transaction({
-                user_id, currency, type, direction: "DEBIT", amount,
-                balance_before, balance_after: updated[currency],
-                source, reference_id, description, metadata, idempotency_key, session
+                user_id,
+                currency,
+                type,
+                direction: "DEBIT",
+                amount,
+                balance_before,
+                balance_after: updated[currency],
+                source,
+                reference_id,
+                description,
+                metadata,
+                idempotency_key,
+                session
             })
+            
         })
 
         await auditService.log_action({

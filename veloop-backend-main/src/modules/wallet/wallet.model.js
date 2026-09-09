@@ -30,7 +30,6 @@ const wallet_transaction_schema = new mongoose.Schema({
 }, { timestamps: true })
 
 
-wallet_schema.index({ user: 1 }, { unique: true })
 
 wallet_transaction_schema.index({ user: 1, createdAt: -1 })
 wallet_transaction_schema.index({ reference_id: 1 })

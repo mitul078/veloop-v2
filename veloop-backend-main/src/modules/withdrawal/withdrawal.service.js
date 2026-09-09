@@ -3,6 +3,7 @@ import walletRepository from "../wallet/wallet.repository.js"
 import payoutService from "../payout/payout.service.js"
 import { ValidationError, NotFoundError } from "../../shared/errors/error_type.js"
 import auditService from "../../shared/services/audit.service.js"
+import with_transaction_retry from "../../shared/utils/with_transaction_retry.js"
 
 async function create_withdrawal({ user_id, method, optionId, payoutDetails, idempotency_key, ip }) {
     if (idempotency_key) {
@@ -19,9 +20,8 @@ async function create_withdrawal({ user_id, method, optionId, payoutDetails, ide
     const session = await walletRepository.start_session()
     try {
         let withdrawal
-        await session.withTransaction(async () => {
-            const before = await walletRepository.get_wallet({ user_id })
-            const balance_before = before ? before[resolved.currency] : 0
+
+        await with_transaction_retry(session, async () => {
 
             const updated = await walletRepository.debit_wallet_atomic({
                 user_id,
@@ -34,6 +34,8 @@ async function create_withdrawal({ user_id, method, optionId, payoutDetails, ide
                 throw new ValidationError(`INSUFFICIENT ${resolved.currency.toUpperCase()} BALANCE`, "INSUFFICIENT_BALANCE")
             }
 
+            const balance_before = updated[resolved.currency] + resolved.requiredAmount
+
             const transaction = await walletRepository.create_transaction({
                 user_id,
                 currency: resolved.currency,
@@ -44,7 +46,7 @@ async function create_withdrawal({ user_id, method, optionId, payoutDetails, ide
                 balance_after: updated[resolved.currency],
                 source: "WITHDRAWAL",
                 reference_id: null,
-                description: `Withdrawal: ${resolved.methodId} ${resolved.optionId}`,
+                description: `Withdrawal — ${resolved.methodId} ${resolved.optionId}`,
                 session
             })
 
@@ -95,7 +97,7 @@ async function get_withdrawal_by_id({ withdrawal_id, user_id }) {
 }
 
 async function reject_withdrawal({ withdrawal_id, reviewNote, rejectionReason, actor_id, ip }) {
-    const withdrawal = await withdrawalRepository.get_withdrawal_by_id_admin({ withdrawal_id})
+    const withdrawal = await withdrawalRepository.get_withdrawal_by_id_admin({ withdrawal_id })
 
     if (!withdrawal) throw new NotFoundError("Withdrawal not found.", "WITHDRAWAL_NOT_FOUND")
     if (withdrawal.status !== "PENDING" && withdrawal.status !== "PROCESSING") {
@@ -104,9 +106,8 @@ async function reject_withdrawal({ withdrawal_id, reviewNote, rejectionReason, a
 
     const session = await walletRepository.start_session()
     try {
-        await session.withTransaction(async () => {
-            const before = await walletRepository.get_wallet({ user_id: withdrawal.user })
-            const balance_before = before ? before[withdrawal.currency] : 0
+
+        await with_transaction_retry(session, async () => {
 
             const updated = await walletRepository.credit_wallet_atomic({
                 user_id: withdrawal.user,
@@ -114,6 +115,8 @@ async function reject_withdrawal({ withdrawal_id, reviewNote, rejectionReason, a
                 amount: withdrawal.currencyAmount,
                 session
             })
+
+            const balance_before = updated[withdrawal.currency] - withdrawal.currencyAmount
 
             await walletRepository.create_transaction({
                 user_id: withdrawal.user,

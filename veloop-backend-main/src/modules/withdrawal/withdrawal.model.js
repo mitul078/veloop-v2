@@ -20,7 +20,7 @@ const withdrawal_schema = new mongoose.Schema({
 }, { timestamps: true })
 
 withdrawal_schema.index({ user: 1, createdAt: -1 })
-withdrawal_schema.index({ status: 1 })
+withdrawal_schema.index({ status: 1, createdAt: -1 })
 withdrawal_schema.index({ idempotencyKey: 1 }, { unique: true, sparse: true })
 
 export const Withdrawal = mongoose.model("Withdrawal", withdrawal_schema)

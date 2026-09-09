@@ -57,7 +57,8 @@ async function get_transactions({ user_id, page = 1, limit = 20, currency, type 
         WalletTransaction.find(match)
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
-            .limit(limit),
+            .limit(limit)
+            .lean(),
         WalletTransaction.countDocuments(match)
     ])
 

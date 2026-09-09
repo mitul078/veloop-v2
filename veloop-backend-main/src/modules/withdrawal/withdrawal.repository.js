@@ -9,17 +9,6 @@ async function find_by_idempotency_key({ idempotencyKey }) {
     return Withdrawal.findOne({ idempotencyKey })
 }
 
-async function get_withdrawals_by_user({ user_id, page = 1, limit = 20, status }) {
-    const match = { user: user_id }
-    if (status) match.status = status
-
-    const [items, total] = await Promise.all([
-        Withdrawal.find(match).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
-        Withdrawal.countDocuments(match)
-    ])
-
-    return { items, total, page, limit }
-}
 
 async function get_withdrawal_by_id({ withdrawal_id, user_id }) {
     return Withdrawal.findOne({ _id: withdrawal_id, user: user_id })
@@ -38,12 +27,33 @@ async function get_withdrawal_by_id_admin({ withdrawal_id }) {
     return Withdrawal.findById(withdrawal_id)
 }
 
+async function get_withdrawals_by_user({ user_id, page = 1, limit = 20, status }) {
+    const match = { user: user_id }
+    if (status) match.status = status
+
+    const [items, total] = await Promise.all([
+        Withdrawal.find(match)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean(),
+        Withdrawal.countDocuments(match)
+    ])
+
+    return { items, total, page, limit }
+}
+
 async function get_all_withdrawals({ page = 1, limit = 20, status }) {
     const match = {}
     if (status) match.status = status
 
     const [items, total] = await Promise.all([
-        Withdrawal.find(match).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).populate("user", "email"),
+        Withdrawal.find(match)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .populate("user", "email")
+            .lean(),
         Withdrawal.countDocuments(match)
     ])
 

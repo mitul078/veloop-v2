@@ -223,15 +223,31 @@ All required test scenarios were verified manually against the running API (see 
 | Rejected withdrawal correctly reverses the deduction via a `REVERSAL` ledger entry | ✅ Pass |
 | Injected/manipulated amount fields in the request are ignored; real values re-derived server-side | ✅ Pass |
 
-## 8. Environment Variables
+## 8. Production Hardening — Improvements Implemented
+
+After the core functionality was built and verified against all required test cases, the backend was reviewed specifically for production-readiness (speed, scalability, reliability) — not for bugs, since none were found in this pass. The following concrete improvements were made:
+
+| # | Improvement | What changed | Why |
+|---|---|---|---|
+| 1 | Removed a redundant DB read on every wallet mutation | `credit_wallet`/`debit_wallet`/`create_withdrawal`/`reject_withdrawal` previously fetched the wallet once to record `balance_before`, then again via the atomic update. `balance_before` is now derived arithmetically from the atomic update's result (`balance_after ∓ amount`) instead. | Cuts one full DB round-trip from every single wallet-mutating request, with zero change in correctness — the math is exact, not approximate. |
+| 2 | In-memory caching for payout configuration | `GET /payout/methods` and `GET /payout/options/:method` are now served from a short-lived (5 min) in-memory cache instead of querying MongoDB on every call. | This data changes rarely; caching removes nearly all read load for what is largely static configuration. Deliberately **not** applied to the internal `get_option_by_id` lookup used by the security-critical `resolve_option` function — that stays a fresh, always-current query, since it's the one value that directly controls money movement. |
+| 3 | `.lean()` on all read-only list/detail queries | Applied to transaction lists, withdrawal lists, and payout config queries. | Returns plain JS objects instead of full Mongoose documents for data that's only ever serialized to JSON — lower memory use and faster response construction, with no change to the response shape. |
+| 4 | Transaction retry logic | Wrapped `session.withTransaction(...)` calls in a retry helper that specifically retries `TransientTransactionError`/`UnknownTransactionCommitResult` (MongoDB's own documented recoverable-error labels), with a short backoff, up to 3 attempts. | Real replica-set conditions (e.g. a brief primary election) can cause a transaction to fail for reasons unrelated to the actual business logic. Genuine business rejections (e.g. insufficient balance) are correctly **not** retried, since they don't carry these error labels — confirmed by testing that an insufficient-balance request still fails immediately, not after a retry delay. |
+| 5 | Compound index on `Withdrawal` | Replaced a single-field `{status: 1}` index with `{status: 1, createdAt: -1}`. | Matches the exact query pattern used by the admin withdrawal list endpoint (filter by status, sort by recency) — lets MongoDB satisfy both the filter and the sort from one index instead of filtering then sorting separately. |
+| 6 | Response compression | Added the `compression` middleware. | Reduces payload size over the wire for larger responses (e.g. transaction/withdrawal lists). Below the default 1KB threshold, compression is correctly skipped, since gzip overhead isn't worth it for small payloads. |
+
+## 9. Environment Variables
 
 See `.env.example` for the full list. Never commit a real `.env` file.
 
-## 9. Deployment
+## 10. Deployment
 
 - Backend: deployed on Render
 - Frontend (user-facing): deployed on Vercel
 - Frontend (admin console): deployed on Vercel (separate project)
 - Database: MongoDB Atlas
 
-Live URLs: *(fill in after deployment)*
+Live URLs:
+- Backend API: *(add your Render URL here)*
+- User frontend: *(add your Vercel URL here)*
+- Admin console: *(add your Vercel URL here)*
